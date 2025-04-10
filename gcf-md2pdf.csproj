@@ -6,7 +6,10 @@
 
   <ItemGroup>
     <PackageReference Include="Google.Cloud.Functions.Hosting" Version="2.2.1" />
+    <PackageReference Include="Google.Cloud.Storage.V1" Version="4.11.0" />
     <PackageReference Include="Google.Events.Protobuf" Version="1.5.0" />
+    <PackageReference Include="itext7.pdfhtml" Version="6.1.0" />
+    <PackageReference Include="Markdig" Version="0.40.0" />
     <None Include="appsettings*.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
