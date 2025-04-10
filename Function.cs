@@ -89,11 +89,15 @@ public class Function : ICloudEventFunction<StorageObjectData>
         {
             Console.WriteLine($"Directory {localTempPath} non esistente, creazione della directory...");
             Directory.CreateDirectory(localTempPath);
+            Console.WriteLine($"Directory {localTempPath} creata con successo.");
         }
 
         try
         {
+            // Get the object from Google Cloud Storage
+            Console.WriteLine($"Getting object {data.Name} from bucket {data.Bucket}...");
             var storageObject = await storageClient.GetObjectAsync(data.Bucket, data.Name);
+            Console.WriteLine($"Object {storageObject.Name} retrieved successfully.");
 
 
             // Get the object name
@@ -104,11 +108,13 @@ public class Function : ICloudEventFunction<StorageObjectData>
             string htmlFilePath = System.IO.Path.Combine(localTempPath, $"{fileName}.html");
             var pdfName = fileName.Split(".txt")[0] + ".pdf";
             string pdfFilePath = System.IO.Path.Combine(localTempPath, pdfName);
-
+            Console.WriteLine($"File name: {fileName}");
+            Console.WriteLine($"HTML file path: {htmlFilePath}");
+            Console.WriteLine($"PDF file path: {pdfFilePath}");
 
 
             // Download the file from Google Cloud Storage
-
+            Console.WriteLine($"Downloading file {objectName} from bucket {inputBucketPath}...");
             string currentFile = "";
             using (var outputFile = File.Create(System.IO.Path.Combine(localTempPath, fileName)))
             {
@@ -119,6 +125,7 @@ public class Function : ICloudEventFunction<StorageObjectData>
 
 
             // Convert Markdown to HTML using Markdig
+            Console.WriteLine($"Converting Markdown to HTML...");
             string markdownContent = await File.ReadAllTextAsync(currentFile);
             var pipeline = new MarkdownPipelineBuilder().Build();
             string htmlContent = Markdig.Markdown.ToHtml(markdownContent, pipeline);
@@ -126,15 +133,16 @@ public class Function : ICloudEventFunction<StorageObjectData>
             Console.WriteLine($"HTML saved to {htmlFilePath}");
 
             // Aggiungi stili CSS
+            Console.WriteLine($"Adding CSS styles to HTML...");
             htmlContent = AggiungiStiliCss(htmlContent);
 
-            // Save the HTML content (optional)
+            // Save the HTML content
+            Console.WriteLine($"Saving HTML content to {htmlFilePath}...");
             File.WriteAllText(htmlFilePath, htmlContent);
-
-            // Save the HTML content (optional)
-            File.WriteAllText(htmlFilePath, htmlContent);
+            Console.WriteLine($"HTML content saved to {htmlFilePath}");
 
             // Conversione da HTML a PDF usando iText
+            Console.WriteLine($"Converting HTML to PDF...");
             using (FileStream pdfStream = new FileStream(pdfFilePath, FileMode.Create))
             {
                 ConverterProperties props = new ConverterProperties();
